@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JD Pitcher</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Paste the Job Description</h1>
+    <p class="subhead">I’ll tell you why I’m the right hire — anonymously.</p>
+
+    <form action="./pitch" method="POST">
+      <textarea
+        name="jd"
+        placeholder="Paste the full job description here…"
+        maxlength="8000"
+        required
+      ></textarea>
+      <button type="submit">Generate Pitch</button>
+    </form>
+
+    <footer>
+      <p>This tool uses anonymized profile data. No personal contact info is shared.</p>
+    </footer>
+  </div>
+</body>
+</html>
