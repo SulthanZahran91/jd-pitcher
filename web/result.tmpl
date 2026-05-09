@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pitch Result</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <div class="container">
+    <article class="pitch-card">
+      <header>
+        <h2>Why {{.Name}} is a strong fit</h2>
+        <span class="badge">Generated via AI</span>
+      </header>
+      <div class="pitch-body">
+        {{.PitchHTML}}
+      </div>
+      <footer>
+        <p class="disclaimer">This pitch is auto-generated from anonymized profile data.</p>
+      </footer>
+    </article>
+  </div>
+</body>
+</html>
