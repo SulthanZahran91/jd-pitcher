@@ -1,0 +1,31 @@
+name: "Sulthan Zahran"
+tagline: "Software Engineer · Smart Factory · LLM Tooling"
+
+experience:
+  - role: "Software Engineer"
+    company_ref: "lg_sinarmas"
+    duration: "2024–Present"
+    highlights:
+      - "Deployed edge AI pipelines for manufacturing QA"
+      - "Built internal logistics platform processing 10k+ events/day"
+
+  - role: "Research Assistant"
+    company_ref: "uni_physics"
+    duration: "2022–2024"
+    highlights:
+      - "Computational physics modeling in Python"
+
+projects:
+  - name: "Clanker"
+    url: "https://github.com/SulthanZahran91/clanker"
+    description: "AI-assisted engineering wiki system"
+
+skills:
+  - category: "Backend"
+    items: ["Go", "Python", "PostgreSQL"]
+  - category: "ML/AI"
+    items: ["LLM orchestration", "OpenAI API", "prompt engineering"]
+
+meta:
+  interests: ["industrial IoT", "physics-informed ML"]
+  location: "Jakarta, Indonesia"
