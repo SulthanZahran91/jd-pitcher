@@ -354,37 +354,37 @@ Since the user mentioned people will integrate this with agents:
 ## 9. Implementation Phases
 
 ### Phase 1 — Skeleton & Config (1–2 hrs)
-- [ ] `go mod init github.com/SulthanZahran91/jd-pitcher`
-- [ ] `main.go` with `chi` router: `GET /`, `POST /api/pitch`, `POST /pitch`
-- [ ] `internal/config.go`: load `.env`, `profile.yaml`, `masks.yaml`, `prompt.md`
-- [ ] Validate at startup: all `company_ref`s must have a mask entry.
-- [ ] Static file server for `web/`.
+- [x] `go mod init github.com/SulthanZahran91/jd-pitcher`
+- [x] `main.go` with `chi` router: `GET /`, `POST /api/pitch`, `POST /pitch`
+- [x] `internal/config.go`: load `.env`, `profile.yaml`, `masks.yaml`, `prompt.md`
+- [x] Validate at startup: all `company_ref`s must have a mask entry.
+- [x] Static file server for `web/`.
 
 ### Phase 2 — Core Logic (2–3 hrs)
-- [ ] `internal/anonymizer.go`: mask profile into Markdown string.
-- [ ] `internal/llm.go`: DeepSeek chat completions client.
-- [ ] `internal/limiter.go`: in-memory token bucket + global counter.
-- [ ] Wire them into the `POST /api/pitch` handler.
+- [x] `internal/anonymizer.go`: mask profile into Markdown string.
+- [x] `internal/llm.go`: DeepSeek chat completions client.
+- [x] `internal/limiter.go`: in-memory token bucket + global counter.
+- [x] Wire them into the `POST /api/pitch` handler.
 
 ### Phase 3 — Frontend (1–2 hrs)
-- [ ] `web/index.html` + `web/style.css` (dark, clean, single-file).
-- [ ] `web/result.tmpl` card template.
-- [ ] `POST /pitch` form handler that renders the template.
+- [x] `web/index.html` + `web/style.css` (dark, clean, single-file).
+- [x] `web/result.tmpl` card template.
+- [x] `POST /pitch` form handler that renders the template.
 
 ### Phase 4 — Logging & Safety (1 hr)
-- [ ] `internal/logger.go`: SQLite setup + write on every request.
-- [ ] IP hashing with daily salt.
-- [ ] `MAX_JD_LENGTH` enforcement.
+- [x] `internal/logger.go`: SQLite setup + write on every request.
+- [x] IP hashing with daily salt.
+- [x] `MAX_JD_LENGTH` enforcement.
 
 ### Phase 5 — Docker & Deploy (1 hr)
-- [ ] Dockerfile + docker-compose.yml.
-- [ ] Traefik router config.
-- [ ] Test end-to-end on `jd.zahranm.cloud`.
+- [x] Dockerfile + docker-compose.yml.
+- [x] Traefik router config.
+- [x] Test end-to-end on `jd.zahranm.cloud`.
 
 ### Phase 6 — GitHub & Docs (1 hr)
-- [ ] Public repo.
-- [ ] `README.md`: fork instructions, schema docs, deploy guide.
-- [ ] `.env.example` and `config/*.example.yaml`.
+- [x] Public repo.
+- [x] `README.md`: fork instructions, schema docs, deploy guide.
+- [x] `.env.example` and `config/*.example.yaml`.
 
 ---
 
