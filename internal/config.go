@@ -3,7 +3,6 @@ package internal
 import (
 	"fmt"
 	"os"
-	"strings"
 
 	"github.com/joho/godotenv"
 	"gopkg.in/yaml.v3"
@@ -11,19 +10,19 @@ import (
 
 // Profile is the user's background data.
 type Profile struct {
-	Name     string        `yaml:"name"`
-	Tagline  string        `yaml:"tagline"`
-	Experience []ExpEntry  `yaml:"experience"`
-	Projects   []Project   `yaml:"projects"`
-	Skills     []SkillCat  `yaml:"skills"`
-	Meta       MetaInfo    `yaml:"meta"`
+	Name       string     `yaml:"name"`
+	Tagline    string     `yaml:"tagline"`
+	Experience []ExpEntry `yaml:"experience"`
+	Projects   []Project  `yaml:"projects"`
+	Skills     []SkillCat `yaml:"skills"`
+	Meta       MetaInfo   `yaml:"meta"`
 }
 
 type ExpEntry struct {
-	Role        string   `yaml:"role"`
-	CompanyRef  string   `yaml:"company_ref"`
-	Duration    string   `yaml:"duration"`
-	Highlights  []string `yaml:"highlights"`
+	Role       string   `yaml:"role"`
+	CompanyRef string   `yaml:"company_ref"`
+	Duration   string   `yaml:"duration"`
+	Highlights []string `yaml:"highlights"`
 }
 
 type Project struct {
@@ -154,42 +153,4 @@ func getEnvFloat(key string, fallback float64) float64 {
 		return fallback
 	}
 	return v
-}
-
-// MaskedProfile serializes the profile with company names replaced.
-func (c *Config) MaskedProfile() string {
-	var b strings.Builder
-
-	b.WriteString(fmt.Sprintf("**%s** — %s\n\n", c.Profile.Name, c.Profile.Tagline))
-
-	if len(c.Profile.Experience) > 0 {
-		b.WriteString("## Experience\n")
-		for _, exp := range c.Profile.Experience {
-			mask := c.Masks.Entities[exp.CompanyRef]
-			b.WriteString(fmt.Sprintf("\n**%s** at %s (%s)\n", exp.Role, mask, exp.Duration))
-			for _, h := range exp.Highlights {
-				b.WriteString(fmt.Sprintf("- %s\n", h))
-			}
-		}
-	}
-
-	if len(c.Profile.Projects) > 0 {
-		b.WriteString("\n## Projects\n")
-		for _, p := range c.Profile.Projects {
-			b.WriteString(fmt.Sprintf("\n**%s** — %s\n", p.Name, p.Description))
-		}
-	}
-
-	if len(c.Profile.Skills) > 0 {
-		b.WriteString("\n## Skills\n")
-		for _, cat := range c.Profile.Skills {
-			b.WriteString(fmt.Sprintf("\n**%s:** %s\n", cat.Category, strings.Join(cat.Items, ", ")))
-		}
-	}
-
-	if len(c.Profile.Meta.Interests) > 0 {
-		b.WriteString(fmt.Sprintf("\n## Interests\n%s\n", strings.Join(c.Profile.Meta.Interests, ", ")))
-	}
-
-	return b.String()
 }

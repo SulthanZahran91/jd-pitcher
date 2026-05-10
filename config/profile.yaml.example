@@ -29,3 +29,4 @@ skills:
 meta:
   interests: ["industrial IoT", "physics-informed ML"]
   location: "Jakarta, Indonesia"
+  # visa_status: "Eligible to work in ..."  # optional

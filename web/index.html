@@ -3,27 +3,132 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>JD Pitcher</title>
+  <title>Recruiter Pitch Generator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./style.css">
 </head>
 <body>
-  <div class="container">
-    <h1>Paste the Job Description</h1>
-    <p class="subhead">I’ll tell you why I’m the right hire — anonymously.</p>
+  <main class="pitch-widget" aria-labelledby="pitch-title">
+    <section class="widget-card">
+      <header class="widget-header">
+        <p class="eyebrow">Recruiter copilot</p>
+        <h2 id="pitch-title">Paste a JD. Get Sulthan’s best-fit pitch.</h2>
+        <p class="widget-copy">Turn a job description into a concise recruiter-ready angle mapped to Sulthan’s portfolio, projects, and smart-factory background.</p>
+      </header>
 
-    <form action="./pitch" method="POST">
-      <textarea
-        name="jd"
-        placeholder="Paste the full job description here…"
-        maxlength="8000"
-        required
-      ></textarea>
-      <button type="submit">Generate Pitch</button>
-    </form>
+      <form action="./pitch" method="POST" id="pitch-form" class="pitch-form">
+        <label for="jd-input">Job description</label>
+        <textarea
+          name="jd"
+          placeholder="Paste the role, requirements, or recruiter message here…"
+          maxlength="8000"
+          required
+          id="jd-input"
+        ></textarea>
+        <div class="form-footer">
+          <p class="helper-text"><span id="char-count">0</span>/8000 characters</p>
+          <button type="submit" id="submit-btn">Generate Pitch</button>
+        </div>
+        <div class="loading" id="loading-indicator" role="status" aria-live="polite">
+          <div class="spinner"></div>
+          <span>Generating a tailored pitch…</span>
+        </div>
+        <p class="error-message" id="error-message" role="alert"></p>
+      </form>
+    </section>
 
-    <footer>
-      <p>This tool uses anonymized profile data. No personal contact info is shared.</p>
-    </footer>
-  </div>
+    <article class="pitch-card is-hidden" id="pitch-result" aria-live="polite">
+      <header class="pitch-card-header">
+        <div>
+          <p class="eyebrow">Generated angle</p>
+          <h2>Why Sulthan is a strong fit</h2>
+        </div>
+        <span class="badge">AI Generated</span>
+      </header>
+      <div class="pitch-body" id="pitch-output"></div>
+      <footer class="result-footer">
+        <p class="disclaimer">Auto-generated from the provided JD and public portfolio profile. Review before sending.</p>
+        <button type="button" class="btn-back" id="reset-btn">Generate another</button>
+      </footer>
+    </article>
+  </main>
+
+  <script>
+    const form = document.getElementById('pitch-form');
+    const input = document.getElementById('jd-input');
+    const submit = document.getElementById('submit-btn');
+    const loading = document.getElementById('loading-indicator');
+    const error = document.getElementById('error-message');
+    const result = document.getElementById('pitch-result');
+    const output = document.getElementById('pitch-output');
+    const reset = document.getElementById('reset-btn');
+    const count = document.getElementById('char-count');
+
+    function escapeHTML(value) {
+      return value.replace(/[&<>'"]/g, (char) => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        "'": '&#39;',
+        '"': '&quot;'
+      }[char]));
+    }
+
+    function renderPitch(text) {
+      return escapeHTML(text).replace(/\n/g, '<br>');
+    }
+
+    input.addEventListener('input', () => {
+      count.textContent = input.value.length;
+      error.textContent = '';
+    });
+
+    reset.addEventListener('click', () => {
+      result.classList.add('is-hidden');
+      output.innerHTML = '';
+      input.focus();
+    });
+
+    const routePrefix = window.location.pathname.startsWith('/recruit') ? '/recruit' : '';
+    form.action = `${routePrefix}/pitch`;
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const jd = input.value.trim();
+      if (!jd) {
+        error.textContent = 'Paste a job description first.';
+        input.focus();
+        return;
+      }
+
+      submit.disabled = true;
+      submit.textContent = 'Generating…';
+      loading.style.display = 'flex';
+      error.textContent = '';
+
+      try {
+        const response = await fetch(`${routePrefix}/api/pitch`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ jd })
+        });
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok) {
+          throw new Error(data.error || 'Failed to generate pitch. Please try again.');
+        }
+        output.innerHTML = renderPitch(data.pitch || 'No pitch returned.');
+        result.classList.remove('is-hidden');
+        result.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      } catch (err) {
+        error.textContent = err.message || 'Something went wrong. Please try again.';
+      } finally {
+        submit.disabled = false;
+        submit.textContent = 'Generate Pitch';
+        loading.style.display = 'none';
+      }
+    });
+  </script>
 </body>
 </html>

@@ -11,12 +11,12 @@ import (
 
 // DeepSeekClient talks to any OpenAI-compatible chat completions endpoint.
 type DeepSeekClient struct {
-	BaseURL    string
-	APIKey     string
-	Model      string
-	MaxTokens  int
+	BaseURL     string
+	APIKey      string
+	Model       string
+	MaxTokens   int
 	Temperature float64
-	HTTPClient *http.Client
+	HTTPClient  *http.Client
 }
 
 type chatRequest struct {

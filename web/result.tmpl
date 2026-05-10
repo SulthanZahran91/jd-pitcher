@@ -4,22 +4,29 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pitch Result</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./style.css">
 </head>
 <body>
-  <div class="container">
+  <main class="pitch-widget">
     <article class="pitch-card">
-      <header>
-        <h2>Why {{.Name}} is a strong fit</h2>
-        <span class="badge">Generated via AI</span>
+      <header class="pitch-card-header">
+        <div>
+          <p class="eyebrow">Generated angle</p>
+          <h2>Why {{.Name}} is a strong fit</h2>
+        </div>
+        <span class="badge">AI Generated</span>
       </header>
       <div class="pitch-body">
         {{.PitchHTML}}
       </div>
-      <footer>
-        <p class="disclaimer">This pitch is auto-generated from anonymized profile data.</p>
+      <footer class="result-footer">
+        <p class="disclaimer">Auto-generated from the provided JD and public portfolio profile. Review before sending.</p>
+        <a href="./" class="btn-back">Generate another</a>
       </footer>
     </article>
-  </div>
+  </main>
 </body>
 </html>

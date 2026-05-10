@@ -17,7 +17,7 @@ type RateLimiter struct {
 	globalDay  int
 	globalDate string
 
-	ipLimit    int
+	ipLimit     int
 	globalLimit int
 }
 
