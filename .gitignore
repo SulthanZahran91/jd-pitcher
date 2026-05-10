@@ -1,1 +1,4 @@
 .playwright-mcp/
+.env
+jd-pitcher
+data/logs.sqlite
