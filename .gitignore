@@ -1,5 +1,1 @@
-.env
-*.sqlite
-*.db
-jd-pitcher
-data/
+.playwright-mcp/
