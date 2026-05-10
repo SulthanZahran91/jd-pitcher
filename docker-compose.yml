@@ -2,7 +2,7 @@ services:
   jd-pitcher:
     build: .
     ports:
-      - "172.17.0.1:9100:8080"
+      - "9100:8080"
     env_file: .env
     volumes:
       - ./config:/app/config:ro

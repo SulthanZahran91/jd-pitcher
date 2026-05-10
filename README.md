@@ -1,100 +1,115 @@
 # jd-pitcher
 
-> Let recruiters paste a job description and receive a persuasive, anonymized pitch for why *you* are the right hire. Designed as a forkable portfolio template.
+Recruiter-facing mini app: paste a job description, get a short anonymized pitch for why the profile owner fits the role.
 
----
+Designed to be embedded in a personal portfolio.
 
-## Quick Start
+## What it does
 
-1. **Fork this repo**
-2. **Fill your profile**
-   ```bash
-   cp config/profile.yaml.example config/profile.yaml
-   cp config/masks.yaml.example config/masks.yaml
-   # Edit both files with your background and anonymized entity mappings
-   ```
-3. **Add your API key**
-   ```bash
-   cp .env.example .env
-   # Edit .env and set LLM_API_KEY
-   ```
-4. **Run**
-   ```bash
-   docker compose up -d
-   ```
-5. **Embed in your portfolio**
-   ```html
-   <iframe src="/recruit" width="100%" height="600" frameborder="0"></iframe>
-   ```
+- Reads profile evidence from `config/profile.yaml`
+- Masks sensitive company names with `config/masks.yaml`
+- Sends the masked profile + JD to an OpenAI-compatible LLM
+- Returns a concise bullet-point pitch
+- Logs requests to SQLite for monitoring
 
----
+The default prompt is strict: it should only use direct evidence from the profile and avoid invented claims.
 
-## How It Works
+## Quick start
 
-1. Recruiter pastes a JD into the textarea
-2. The app anonymizes your profile (company names are masked per `masks.yaml`)
-3. A cheap LLM (DeepSeek Chat by default) generates a tailored pitch
-4. The result is rendered as a clean HTML card
+```bash
+cp .env.example .env
+cp config/profile.yaml.example config/profile.yaml
+cp config/masks.yaml.example config/masks.yaml
 
----
+vim .env                 # set LLM_API_KEY
+vim config/profile.yaml  # add your actual profile evidence
+vim config/masks.yaml    # map company_ref keys to anonymized names
+
+docker compose up -d --build
+```
+
+Open:
+
+```text
+http://localhost:9100
+```
+
+Docker maps host port `9100` to container port `8080`.
 
 ## Configuration
 
-### `config/profile.yaml`
+Required env:
 
-Your background data. Use `company_ref` keys that map to `masks.yaml`.
-
-```yaml
-name: "Your Name"
-tagline: "Your tagline"
-experience:
-  - role: "Software Engineer"
-    company_ref: "current_employer"
-    duration: "2024–Present"
-    highlights:
-      - "Built thing X"
-projects:
-  - name: "CoolProject"
-    url: "https://github.com/..."
-    description: "What it does"
-skills:
-  - category: "Backend"
-    items: ["Go", "Rust"]
-meta:
-  interests: ["distributed systems"]
-  location: "City, Country"
+```bash
+LLM_API_KEY=your_key_here
 ```
 
-### `config/masks.yaml`
+Main env knobs:
 
-Anonymize company names. The LLM prompt explicitly instructs the model to use these exact strings.
-
-```yaml
-entities:
-  current_employer: "a Series B fintech startup"
-  previous_employer: "a Fortune 500 cloud provider"
+```bash
+LLM_BASE_URL=https://api.deepseek.com/v1
+LLM_MODEL=deepseek-chat
+RATE_LIMIT_IP_HOUR=5
+RATE_LIMIT_GLOBAL_DAY=50
+MAX_JD_LENGTH=8000
+LOG_DB_PATH=data/logs.sqlite
 ```
 
-### `config/prompt.md`
+Main config files:
 
-Edit the system prompt to change tone, length, or style. Available template variables:
-- `{{.Name}}` — your name
-- `{{.JD}}` — the recruiter's pasted JD
-- `{{.MaskedProfile}}` — your profile with company names replaced
+- `config/profile.yaml` — factual profile evidence: name, tagline, education, experience, projects, skills, meta
+- `config/masks.yaml` — anonymized labels for every `company_ref`
+- `config/prompt.md` — output rules, tone, and template variables
 
----
+Prompt variables:
 
-## API (Agent-Friendly)
+- `{{.Name}}`
+- `{{.JD}}`
+- `{{.MaskedProfile}}`
 
-Agents can skip the UI entirely:
+After profile, mask, prompt, or env changes:
+
+```bash
+docker compose restart
+```
+
+If Go code changed:
+
+```bash
+docker compose up -d --build
+```
+
+## Integrate into a website
+
+### Iframe
+
+```html
+<iframe src="/recruit" width="100%" height="650" frameborder="0" loading="lazy"></iframe>
+```
+
+### Reverse proxy
+
+Run the app on `9100:8080`, then route your portfolio path, for example `/recruit`, to the app.
+
+Current compose mapping:
+
+```yaml
+ports:
+  - "9100:8080"
+```
+
+The app serves from `/`, so the proxy should forward `/recruit` traffic to the app and preserve form/API requests under that path.
+
+### API
 
 ```bash
 curl -X POST https://yourdomain.com/recruit/api/pitch \
   -H "Content-Type: application/json" \
-  -d '{"jd": "Paste JD here..."}'
+  -d '{"jd":"Paste JD here..."}'
 ```
 
 Response:
+
 ```json
 {
   "pitch": "...",
@@ -103,122 +118,56 @@ Response:
 }
 ```
 
----
+## My live setup
 
-## Rate Limits & Safety
+My portfolio serves this app at `/recruit` behind a reverse proxy.
 
-- **Per-IP:** Token bucket, configurable (default 5/hour)
-- **Global:** Daily cap (default 50/day) to protect your API wallet
-- **Max JD length:** 8000 characters
-- **Logging:** SQLite append-only with SHA-256 hashed IPs (daily salt rotation)
+Runtime shape:
 
-## Monitoring
+- Docker service: `jd-pitcher`
+- Container port: `8080`
+- Host port: `9100`
+- Reverse proxy route: `/recruit`
+- Bind mounts: `config/` and `data/`
 
-Check the latest submission and generated answer from the host:
-
-```bash
-cd /home/dev/hosted_projects/jd-pitcher
-./scripts/last-log.py
-```
-
-Show the last 10 requests:
+Common commands from the project directory:
 
 ```bash
-./scripts/last-log.py -n 10
+docker compose up -d --build          # rebuild after code changes
+docker compose restart                # reload config/prompt/env changes
+./scripts/last-log.py                 # latest pitch
+./scripts/last-log.py -n 10 --compact # recent compact logs
+docker compose logs -f jd-pitcher     # live logs
 ```
 
-Compact mode:
+## Sync profile from a source file
+
+Optional helper for generating `profile.yaml` and `masks.yaml` from a local source-of-truth Markdown file:
 
 ```bash
-./scripts/last-log.py -n 10 --compact
+python3 scripts/sync_profile.py                 # dry run
+python3 scripts/sync_profile.py --apply         # write files + rebuild
+python3 scripts/sync_profile.py --force --apply # force rebuild
 ```
 
-Runtime logs:
+The script is idempotent: if generated files are unchanged, it skips rewriting them.
 
-```bash
-docker compose logs -f jd-pitcher
-```
+## Monitoring and safety
 
----
+- Per-IP rate limit
+- Global daily request cap
+- Max JD length guard
+- SQLite request logs
+- Hashed IP logging
+- Company-name masking before LLM calls
 
-## How I Use This
+## Tech stack
 
-This section documents my personal workflow running this tool on my own portfolio.
-
-### Live Setup
-
-The service runs as a Docker container on my VPS, fronted by a Traefik reverse proxy at `zahranm.cloud/recruit`:
-
-- **Deploy path:** `/home/dev/hosted_projects/jd-pitcher/`
-- **Port:** container 8080 mapped to `172.17.0.1:9100` (Docker bridge for Traefik)
-- **Rebuild & restart (binary changed):**
-  ```bash
-  docker compose up -d --build
-  ```
-- **Restart only (config/prompt changes):**
-  ```bash
-  docker compose restart
-  ```
-
-The `config/` and `data/` directories are bind-mounted, so editing YAML on the host takes effect after a container restart — no rebuild needed unless the Go binary changed.
-
-### Populating profile.yaml
-
-I keep `config/profile.yaml` current by editing it directly:
-
-1. **Experience** — Each role uses a `company_ref` key that maps to an anonymized mask in `masks.yaml`. When I add a new role or update highlights, I edit the YAML and ensure the ref has a mask entry.
-2. **Projects** — I add portfolio projects with their GitHub URL and a short description. The LLM uses these as evidence.
-3. **Skills & meta** — Updated when I pick up new tools or interests relevant to my job search.
-
-**Validation:** The app checks at startup that every `company_ref` in profile.yaml has a corresponding mask. If a ref is missing, the server refuses to start with a clear error message.
-
-### Keeping Updated
-
-There's no automated sync yet (a Hermes cron that pulls from Obsidian is in the backlog). Current workflow:
-
-```bash
-cd /home/dev/hosted_projects/jd-pitcher
-
-# Edit profile
-vim config/profile.yaml
-
-# If I added a new company_ref, update masks too
-vim config/masks.yaml
-
-# Restart container
-docker compose restart
-
-# Verify
-./scripts/last-log.py -n 3
-```
-
-For tone/style changes I edit `config/prompt.md` directly. Available template variables: `{{.Name}}`, `{{.JD}}`, `{{.MaskedProfile}}`.
-
-### Monitoring
-
-```bash
-# Latest pitch
-./scripts/last-log.py
-
-# Last 10 compact
-./scripts/last-log.py -n 10 --compact
-
-# Live tail
-docker compose logs -f jd-pitcher
-```
-
-My `.env` uses different rate limits (10/hr IP, 1000/day global) than the fork defaults — the IP limit is tighter to keep API costs predictable, and the global cap is high since I'm the only real user behind the reverse proxy.
-
----
-
-## Tech Stack
-
-- **Go 1.23+** — single binary, no framework bloat
-- **chi** — minimal router
-- **modernc.org/sqlite** — pure Go SQLite (no CGO)
-- **DeepSeek Chat** — OpenAI-compatible, ~$0.0015 per request
-
----
+- Go
+- chi router
+- SQLite via `modernc.org/sqlite`
+- Docker Compose
+- DeepSeek / OpenAI-compatible chat API
 
 ## License
 

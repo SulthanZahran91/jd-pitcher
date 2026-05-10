@@ -12,10 +12,19 @@ import (
 type Profile struct {
 	Name       string     `yaml:"name"`
 	Tagline    string     `yaml:"tagline"`
+	Education  string     `yaml:"education"`
 	Experience []ExpEntry `yaml:"experience"`
 	Projects   []Project  `yaml:"projects"`
 	Skills     []SkillCat `yaml:"skills"`
 	Meta       MetaInfo   `yaml:"meta"`
+}
+
+// GetEducation returns the education field or a default if empty.
+func (p *Profile) GetEducation() string {
+	if p.Education == "" {
+		return "Not specified"
+	}
+	return p.Education
 }
 
 type ExpEntry struct {

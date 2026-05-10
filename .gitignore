@@ -2,3 +2,5 @@
 .env
 jd-pitcher
 data/logs.sqlite
+__pycache__/
+*.py[cod]

@@ -1,31 +1,67 @@
-name: "Sulthan Zahran"
-tagline: "Software Engineer · Smart Factory · LLM Tooling"
+name: "Sulthan Zahran Ma'ruf"
+tagline: "Hardware-software integration engineer specializing in factory automation and intralogistics"
+education: "Bachelor of Science — Physics / Instrumentation Physics (2019–2023)"
 
 experience:
-  - role: "Software Engineer"
-    company_ref: "lg_sinarmas"
-    duration: "2024–Present"
+  - role: "AMHS Software Engineer"
+    company_ref: "lg_sinarmas_technology_solutions"
+    duration: ""
     highlights:
-      - "Deployed edge AI pipelines for manufacturing QA"
-      - "Built internal logistics platform processing 10k+ events/day"
-
-  - role: "Research Assistant"
-    company_ref: "uni_physics"
-    duration: "2022–2024"
+      - "Grew the logistics software team from 1 (himself) to 16+ engineers."
+      - "Personally involved in training every team member. Created comprehensive onboarding covering MES, RTD, CIM, and HSMS/SECS/GEM protocols."
+      - "Conducts factory line tours, ongoing mentorship, and maintains an accessible \"ask me anything\" support style."
+  - role: "International Deployment (South Korea)"
+    company_ref: "lg_ensol_ochang_factory"
+    duration: ""
+    highlights: []
+  - role: "Instrumentation Engineer (Freelance)"
+    company_ref: "pt_polychemie_asia_pacific_permai"
+    duration: ""
     highlights:
-      - "Computational physics modeling in Python"
+      - "Built a prototype ADC (Analog-to-Digital Converter) system to enable PC-based reading of temperature and flow sensors."
+      - "Evaluated DAQ systems, PLCs, and Arduino as platform options."
+      - "Developed a GUI application to plot, save, and auto-detect data from the prototype."
+  - role: "Research Assistant, FAAN Laboratory"
+    company_ref: "university_of_indonesia"
+    duration: ""
+    highlights:
+      - "Features: Real-time data acquisition and processing, peak detection and fitting algorithms, data filtering (Moving Average, Savitzky-Golay), interactive Tauc plot generation, historical and real-time analysis modes."
 
 projects:
-  - name: "Clanker"
-    url: "https://github.com/SulthanZahran91/clanker"
-    description: "AI-assisted engineering wiki system"
+  - name: "Timing Diagram Analyzer"
+    url: ""
+    description: "Python, SQL, Log Processing"
+  - name: "IoT Sensor Monitoring Automation"
+    url: ""
+    description: "JavaScript, Web Scraping"
+  - name: "PLC Log Waveform Visualizer"
+    url: ""
+    description: "Originally PyQt6, later migrated to React + Go"
+  - name: "ThingWorx IoT Automation (TwxAuto)"
+    url: ""
+    description: "JavaScript"
+  - name: "Conveyor Map XML Visualizer"
+    url: ""
+    description: "PySide6"
+  - name: "SECS/GEM Southbound Simulator"
+    url: ""
+    description: "Go, Embedded Web UI"
 
 skills:
-  - category: "Backend"
-    items: ["Go", "Python", "PostgreSQL"]
-  - category: "ML/AI"
-    items: ["LLM orchestration", "OpenAI API", "prompt engineering"]
+  - category: "Industrial Systems & Automation"
+    items: ["AMHS (Automated Material Handling Systems) — core expertise", "MES (Manufacturing Execution Systems) — factory-level production management", "RTD (Real-Time Dispatch) — logistics dispatching algorithms", "AGV integration and fleet coordination", "PLC programming (Schneider) and HMI design", "Control systems — PID tuning, system dynamics"]
+  - category: "Programming Languages & Frameworks"
+    items: ["C#", "SQL", "Go", "Rust", "JavaScript/TypeScript", "MATLAB"]
+  - category: "Data Engineering & ML"
+    items: ["ETL pipeline development", "Large-scale log processing (millions of records, 100MB+ files)", "Web scraping — BeautifulSoup", "Real-time monitoring dashboards"]
+  - category: "Robotics & Logistics"
+    items: ["Multi-robot coordination (via AGV fleet systems)", "Real-time logistics/dispatching algorithms", "Material flow optimization and bottleneck analysis", "ROS2 (development environment set up, exploring for portfolio)"]
+  - category: "DevOps & Tools"
+    items: ["Git, Jenkins CI/CD", "Docker", "Linux, Windows", "CUDA/PyTorch (ML dev environment setup)"]
+  - category: "Hardware-Software Integration"
+    items: ["PLC ↔ Software communication", "SECS/GEM protocol implementation", "Control systems ↔ IT systems integration", "Sensor integration & DAQ systems", "Physical constraint intuition that pure CS engineers typically lack"]
 
 meta:
-  interests: ["industrial IoT", "physics-informed ML"]
+  interests: ["industrial IoT", "intralogistics", "physics-informed ML"]
   location: "Jakarta, Indonesia"
+  visa_status: ""

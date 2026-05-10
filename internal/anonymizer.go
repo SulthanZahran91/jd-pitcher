@@ -11,6 +11,8 @@ func (c *Config) MaskedProfile() string {
 
 	b.WriteString(fmt.Sprintf("**%s** — %s\n\n", c.Profile.Name, c.Profile.Tagline))
 
+	b.WriteString(fmt.Sprintf("## Education\n%s\n\n", c.Profile.GetEducation()))
+
 	if len(c.Profile.Experience) > 0 {
 		b.WriteString("## Experience\n")
 		for _, exp := range c.Profile.Experience {
