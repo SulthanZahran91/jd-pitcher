@@ -207,7 +207,7 @@ For tone/style changes I edit `config/prompt.md` directly. Available template va
 docker compose logs -f jd-pitcher
 ```
 
-My `.env` uses higher rate limits (100/hr IP, 1000/day global) than the fork defaults — this is my personal instance behind a reverse proxy with its own rate limiting and abuse protection upstream.
+My `.env` uses different rate limits (10/hr IP, 1000/day global) than the fork defaults — the IP limit is tighter to keep API costs predictable, and the global cap is high since I'm the only real user behind the reverse proxy.
 
 ---
 
